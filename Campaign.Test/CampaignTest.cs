@@ -105,11 +105,11 @@ public class CampaignTest
     // [Theory, InlineData("get_campaign_info C1")]
     public void CampaignInfo(string command)
     {
-        command = "create_campaign C1 P1 5 20 100";
-        _executeCommandService.ExecuteCommand(command);
+        // command = "create_campaign C1 P1 5 20 100";
+        // _executeCommandService.ExecuteCommand(command);
+        // command = "get_campaign_info C1";
         
         const string expected = "Campaign C1 info; Status";
-        command = "get_campaign_info C1";
         var result = _executeCommandService.ExecuteCommand(command);
         Assert.StartsWith(expected, result);
     }
