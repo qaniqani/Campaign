@@ -11,4 +11,16 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Campaign.Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Campaign.Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Campaign.Test\**" />
+    </ItemGroup>
+
 </Project>

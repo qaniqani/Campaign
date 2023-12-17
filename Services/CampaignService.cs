@@ -5,18 +5,51 @@ namespace Campaign.Services;
 public interface ICampaignService
 {
     List<ProductCampaign> List();
-    void GetCampaignInfo(string name);
+    string GetCampaignInfo(string name);
     ProductCampaign? GetCampaign(string name);
     bool CheckCampaign(string campaignName);
     ProductCampaign? GetActiveCampaign(string productCode);
-    void Add(string name, string productCode, int duration, decimal priceManipulationLimit, int targetSalesCount);
+    string CreateCampaign(string name, string productCode, int duration, decimal priceManipulationLimit,
+        int targetSalesCount);
 }
 
 public class CampaignService : ICampaignService
 {
+    private readonly IProductService _productService;
     private static readonly List<ProductCampaign> Campaigns = new();
 
-    public void Add(string name, string productCode, int duration, decimal priceManipulationLimit, int targetSalesCount)
+    public CampaignService(IProductService productService)
+    {
+        _productService = productService;
+    }
+
+    public string CreateCampaign(string name, string productCode, int duration, decimal priceManipulationLimit, int targetSalesCount)
+    {
+        string msg;
+        var checkCampaign = CheckCampaign(name);
+        if (checkCampaign)
+        {
+            msg = $"There is a campaign named {name}";
+            Console.WriteLine(msg);
+            return msg;
+        }
+
+        var product = _productService.GetProduct(productCode);
+        if (product != null)
+        {
+            Add(name, productCode, duration, priceManipulationLimit, targetSalesCount);
+            msg =
+                $"Campaign created; name {name}, product {productCode}, duration {duration}, limit {priceManipulationLimit}, target sales count {targetSalesCount}";
+            Console.WriteLine(msg);
+            return msg;
+        }
+
+        msg = $"Product {productCode} not found";
+        Console.WriteLine(msg);
+        return msg;
+    }
+
+    private void Add(string name, string productCode, int duration, decimal priceManipulationLimit, int targetSalesCount)
     {
         var currentTime = TimeService.GetCurrentTime();
         
@@ -56,18 +89,23 @@ public class CampaignService : ICampaignService
             currentTime <= campaign.EndTime);
     }
     
-    public void GetCampaignInfo(string name)
+    public string GetCampaignInfo(string name)
     {
+        string msg;
         var campaign = GetCampaign(name);
         if (campaign != null)
         {
             var currentTime = TimeService.GetCurrentTime();
             var status = campaign.EndTime > currentTime ? "Active" : "Ended";
             var averageItemPrice = campaign.TotalSales > 0 ? campaign.Turnover / campaign.TotalSales : 0;
-            Console.WriteLine($"Campaign {name} info; Status {status}, Target Sales {campaign.TargetSalesCount}, Total Sales {campaign.TotalSales}, Turnover {campaign.Turnover}, Average Item Price {averageItemPrice}");
+            msg =
+                $"Campaign {name} info; Status {status}, Target Sales {campaign.TargetSalesCount}, Total Sales {campaign.TotalSales}, Turnover {campaign.Turnover}, Average Item Price {averageItemPrice}";
         }
         else
-            Console.WriteLine($"Campaign {name} not found");
+            msg = $"Campaign {name} not found";
+        
+        Console.WriteLine(msg);
+        return msg;
     }
 
     public List<ProductCampaign> List()

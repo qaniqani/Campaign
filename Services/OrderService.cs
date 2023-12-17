@@ -5,7 +5,7 @@ namespace Campaign.Services;
 public interface IOrderService
 {
     List<Order> List();
-    void CreateOrder(string productCode, int quantity);
+    string CreateOrder(string productCode, int quantity);
 }
 
 public class OrderService : IOrderService
@@ -26,9 +26,10 @@ public class OrderService : IOrderService
         return Orders;
     }
 
-    public void CreateOrder(string productCode, int quantity)
+    public string CreateOrder(string productCode, int quantity)
     {
         var product = _productService.GetProduct(productCode);
+        string msg;
         if (product != null)
         {
             if (product.Stock >= quantity)
@@ -43,12 +44,15 @@ public class OrderService : IOrderService
                     CampaingCode = activeCampaign?.Name ?? "-",
                 });
                 product.Stock -= quantity;
-                Console.WriteLine($"Order created; product {productCode}, quantity {quantity}");
+                msg = $"Order created; product {productCode}, quantity {quantity}";
             }
             else
-                Console.WriteLine($"Insufficient stock for product {productCode}");
+                msg = $"Insufficient stock for product {productCode}";
         }
         else
-            Console.WriteLine($"Product {productCode} not found");
+            msg = $"Product {productCode} not found";
+        
+        Console.WriteLine(msg);
+        return msg;
     }
 }

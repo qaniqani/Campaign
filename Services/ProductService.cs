@@ -5,9 +5,9 @@ namespace Campaign.Services;
 public interface IProductService
 {
     List<Product> List();
-    void GetProductInfo(string code);
+    string GetProductInfo(string code);
     Product? GetProduct(string productCode);
-    void CreateProduct(string code, decimal price, int stock);
+    string CreateProduct(string code, decimal price, int stock);
 }
 
 public class ProductService : IProductService
@@ -19,10 +19,12 @@ public class ProductService : IProductService
         return Products.FirstOrDefault(a => a.Code == productCode);
     }
     
-    public void CreateProduct(string code, decimal price, int stock)
+    public string CreateProduct(string code, decimal price, int stock)
     {
         Products.Add(new Product { Code = code, Price = price, MainPrice = price, Stock = stock });
-        Console.WriteLine($"Product created; code {code}, price {price}, stock {stock}");
+        var msg = $"Product created; code {code}, price {price}, stock {stock}";
+        Console.WriteLine(msg);
+        return msg;
     }
 
     public List<Product> List()
@@ -30,11 +32,13 @@ public class ProductService : IProductService
         return Products;
     }
 
-    public void GetProductInfo(string code)
+    public string GetProductInfo(string code)
     {
         var product = Products.FirstOrDefault(p => p.Code == code);
-        Console.WriteLine(product != null
+        var msg = product != null
             ? $"Product {code} info; price {product.Price}, stock {product.Stock}"
-            : $"Product {code} not found");
+            : $"Product {code} not found";
+        Console.WriteLine(msg);
+        return msg;
     }
 }

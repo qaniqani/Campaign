@@ -14,9 +14,11 @@ public static class TimeService
         return _currentTime;
     }
 
-    public static void IncreaseTime(int hours)
+    public static string IncreaseTime(int hours)
     {
         _currentTime = _currentTime.AddHours(hours);
-        Console.WriteLine($"Time is {_currentTime:HH:mm}");
+        var msg = $"Time is {_currentTime:HH:mm}";
+        Console.WriteLine(msg);
+        return msg;
     }
 }

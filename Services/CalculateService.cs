@@ -32,7 +32,7 @@ public class CalculateService : ICalculateService
             foreach (var product in products)
             {
                 var newPrice = CalculateNewPrice(product, campaign);
-                Console.WriteLine($"New product price: {newPrice}");
+                // Console.WriteLine($"New product price: {newPrice}");
                 
                 var orderGrp = orders
                     .Where(a => a.CampaingCode == campaign.Name && a.ProductCode == product.Code)
@@ -62,7 +62,7 @@ public class CalculateService : ICalculateService
         }
     }
     
-    public decimal CalculateNewPrice(Product product, ProductCampaign campaign)
+    private decimal CalculateNewPrice(Product product, ProductCampaign campaign)
     {
         var minPrice = product.MainPrice * (1 - campaign.PriceManipulationLimit / 100);
         var maxPrice = product.MainPrice * (1 + campaign.PriceManipulationLimit / 100);
